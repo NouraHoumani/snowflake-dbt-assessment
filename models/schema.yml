@@ -17,13 +17,3 @@ models:
         tests: [not_null, unique]
       - name: customer_name
       - name: total_revenue
-
-sources:
-  - name: tpch
-    database: SNOWFLAKE_SAMPLE_DATA
-    schema: TPCH_SF1
-    description: "TPC-H sample data in Snowflake."
-    tables:
-      - name: customer
-      - name: orders
-      - name: lineitem
