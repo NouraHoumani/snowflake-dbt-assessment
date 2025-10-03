@@ -17,10 +17,10 @@ select
   o.o_orderstatus,
   o.o_totalprice,
   o.o_orderdate,
-  extract(year from o.o_orderdate) as order_year,
+  DATE_PART('year', o.o_orderdate) AS order_year,
   o.o_orderpriority,
   o.o_clerk,
   o.o_shippriority,
   o.o_comment
 from orders o
-left join customer c on o.o_custkey = c.c_custkey;
+left join customer c on o.o_custkey = c.c_custkey
