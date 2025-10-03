@@ -1,19 +1,59 @@
 version: 2
 
 models:
+  # -------- SILVER --------
   - name: stg_orders
     description: "Silver: orders joined with customer; adds customer_name and order_year."
     columns:
       - name: order_key
         tests: [not_null, unique]
       - name: customer_key
+        tests:
+          - not_null
+          - relationships:                # FK to raw customers (or to stg_customer if you prefer)
+              to: source('tpch','customer')
+              field: c_custkey
       - name: customer_name
       - name: order_year
+      - name: o_orderstatus               # raw column still present in your model
+        tests:
+          - accepted_values:
+              values: ['O','F','P']       # TPC-H domain
 
+  - name: stg_customer
+    description: "Silver: cleaned customer."
+    columns:
+      - name: customer_key
+        tests: [not_null, unique]
+      - name: nation_key
+        tests: [not_null]
+
+  - name: stg_lineitem
+    description: "Silver: cleaned lineitem (order line grain)."
+    columns:
+      - name: order_key
+        tests: [not_null]
+      - name: line_number
+        tests: [not_null]
+      - name: l_returnflag
+        tests:
+          - accepted_values:
+              values: ['A','N','R']       # TPC-H
+      - name: l_linestatus
+        tests:
+          - accepted_values:
+              values: ['F','O']
+    tests:
+      # dbt_utils test (optional; requires packages.yml + dbt deps)
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [order_key, line_number]
+
+  # -------- GOLD --------
   - name: customer_revenue
-    description: "Gold: total revenue per customer from LINEITEM * (1 - discount)."
+    description: "Gold: total revenue per customer from lineitem using (extendedprice * (1 - discount))."
     columns:
       - name: customer_key
         tests: [not_null, unique]
       - name: customer_name
       - name: total_revenue
+        tests: [not_null]
