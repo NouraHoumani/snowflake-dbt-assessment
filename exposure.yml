@@ -1,0 +1,11 @@
+
+exposures:
+  - name: revenue_dashboard
+    type: dashboard
+    maturity: high
+    url: https://example.com/revenue-dashboard
+    depends_on:
+      - ref('customer_revenue')
+    owner:
+      name: Analytics Team
+      email: analytics@example.com
