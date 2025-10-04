@@ -7,3 +7,4 @@ sources:
       - name: customer
       - name: orders
       - name: lineitem
+      - name: nation    
