@@ -25,4 +25,4 @@ select
   c.c_name    as customer_name,
   r.total_revenue
 from revenue r
-join customer c on c.c_custkey = r.customer_key;
+join customer c on c.c_custkey = r.customer_key
